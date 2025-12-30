@@ -1,0 +1,6 @@
+music21>=6.1.0
+pytest>=7.0
+fastapi
+uvicorn[standard]
+music21
+python-multipart
