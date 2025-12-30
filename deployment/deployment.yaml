@@ -6,14 +6,14 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: sheetmusic
+      app: sheetmusic-app
   template:
     metadata:
       labels:
-        app: sheetmusic
+        app: sheetmusic-app
     spec:
       containers:
-        - name: sheetmusic             # Must match workflow `kubectl set image` name
+        - name: sheetmusic-app
           image: 870026572518.dkr.ecr.us-east-1.amazonaws.com/sheetmusic-app:latest
           ports:
             - containerPort: 8000

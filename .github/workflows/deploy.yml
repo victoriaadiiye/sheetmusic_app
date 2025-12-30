@@ -47,7 +47,7 @@ jobs:
     - name: Update Deployment image and rollout
       run: |
         kubectl set image deployment/sheetmusic-app \
-          sheetmusic=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+          sheetmusic-app=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
         kubectl rollout status deployment/sheetmusic-app --timeout=2m
 
     - name: Rollback if deployment fails
