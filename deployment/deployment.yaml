@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sheetmusic-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sheetmusic
+  template:
+    metadata:
+      labels:
+        app: sheetmusic
+    spec:
+      containers:
+        - name: sheetmusic             # Must match workflow `kubectl set image` name
+          image: 870026572518.dkr.ecr.us-east-1.amazonaws.com/sheetmusic-app:latest
+          ports:
+            - containerPort: 8000
