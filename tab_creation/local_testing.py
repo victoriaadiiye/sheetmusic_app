@@ -1,5 +1,6 @@
 import os
-from converter import convert 
+from converter import convert
+
 
 def test_conversion():
     """
@@ -7,7 +8,9 @@ def test_conversion():
     Adjust file_path and tuning as needed.
     """
     # Path to a sample MusicXML file
-    file_path = "/Users/victoriaadiiye/Projects/sheetmusic/bartokduets_pizzicato_pt1.musicxml"
+    file_path = (
+        "/Users/victoriaadiiye/Projects/sheetmusic/bartokduets_pizzicato_pt1.musicxml"
+    )
 
     # Choose a tuning
     tuning = "guitar-cello-tuning"
@@ -24,6 +27,7 @@ def test_conversion():
         print(f"✅ Conversion successful! Output file: {output_file}")
     else:
         print(f"❌ Conversion failed. No output file created.")
+
 
 if __name__ == "__main__":
     test_conversion()

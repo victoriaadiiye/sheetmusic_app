@@ -1,12 +1,12 @@
-
 DEFAULT_TUNINGS: dict[str, str] = {
     "standard": "#'standard \\stringTuning <e, a, d g b e'>",
     "drop-d": "#'drop-d \\stringTuning <d, a, d g b e'>",
     "open-g": "#'open-g \\stringTuning <d, g, d g b d'>",
     "dadgad": "#'dadgad \\stringTuning <d, a, d g a d'>",
     "guitar-cello-tuning": "#'guitar-cello-tuning \\stringTuning <c, g, d g a e'>",
-    "bouzouki": "#'bouzouki \\stringTuning <g, d a d'>"
+    "bouzouki": "#'bouzouki \\stringTuning <g, d a d'>",
 }
+
 
 def get_tuning(tuning: str) -> str | None:
     """
@@ -42,7 +42,7 @@ def generate_name(s: str) -> str:
     """
     if not s:
         return "mA"
-    if not s.startswith('m'):
+    if not s.startswith("m"):
         raise ValueError("Input must start with 'm'")
 
     letters = s[1:]
@@ -52,9 +52,9 @@ def generate_name(s: str) -> str:
     c = letters[0]
     length = len(letters)
 
-    if c == 'Z':
-        next_letters = 'A' * (length + 1)
+    if c == "Z":
+        next_letters = "A" * (length + 1)
     else:
         next_letters = chr(ord(c) + 1) * length
 
-    return 'm' + next_letters
+    return "m" + next_letters

@@ -1,7 +1,15 @@
 from music21 import stream, note, chord, converter, clef, tempo, dynamics, key, meter
-from tab_creation.lilypond_lib import create_lilypond_note, create_lilypond_chord, create_lilypond_rest, generate_staff_groups, generate_guitar_tab, generate_pdf_from_lilypond
+from tab_creation.lilypond_lib import (
+    create_lilypond_note,
+    create_lilypond_chord,
+    create_lilypond_rest,
+    generate_staff_groups,
+    generate_guitar_tab,
+    generate_pdf_from_lilypond,
+)
 from tab_creation.utils import get_tuning, generate_name
 import os
+
 
 def write_lilypond_tab(lilypond_code: str, filename: str) -> str:
     """
@@ -32,7 +40,12 @@ def import_score(file_path: str) -> stream.Score:
     return converter.parse(file_path)
 
 
-def transpose_score(s: stream.Score, transpose: bool = False, interval: str = 'P8', new_clef: clef.Clef | None = None) -> stream.Score:
+def transpose_score(
+    s: stream.Score,
+    transpose: bool = False,
+    interval: str = "P8",
+    new_clef: clef.Clef | None = None,
+) -> stream.Score:
     """
     Optionally transpose a score and set a new clef for all parts.
 
@@ -89,10 +102,10 @@ def convert_to_lilypond(s: stream.Score) -> tuple[str, str, str]:
                     new_TS = f"{n.numerator}/{n.denominator}"
                     if new_TS != time_signature:
                         time_signature = new_TS
-            measure.extend('|')
+            measure.extend("|")
             temp.extend(measure)
 
-    notes: str = ' '.join(temp)
+    notes: str = " ".join(temp)
     return notes, time_signature, key_signature
 
 
@@ -107,13 +120,15 @@ def iterate_measure(s: stream.Score) -> tuple[str, str, str]:
         Tuple of (current_scores string, time signature, key signature).
     """
     x = 1
-    current_scores: str = ''
-    key_signature: str = ''
-    measures: int = len(s.parts[0].getElementsByClass('Measure'))
-    name: str = ''
+    current_scores: str = ""
+    key_signature: str = ""
+    measures: int = len(s.parts[0].getElementsByClass("Measure"))
+    name: str = ""
 
     while s.measure(x):
-        notes, time_signature_temp, key_signature_temp = convert_to_lilypond(s.measures(x, x + 3))
+        notes, time_signature_temp, key_signature_temp = convert_to_lilypond(
+            s.measures(x, x + 3)
+        )
         if time_signature_temp:
             time_signature = time_signature_temp
         if key_signature_temp:
@@ -129,11 +144,11 @@ def iterate_measure(s: stream.Score) -> tuple[str, str, str]:
 
 
 def convert(
-    file_path: str, 
-    tuning_arg: str, 
-    transpose: bool = True, 
-    output_dir: str = ".", 
-    generate_pdf: bool = True
+    file_path: str,
+    tuning_arg: str,
+    transpose: bool = True,
+    output_dir: str = ".",
+    generate_pdf: bool = True,
 ) -> str:
     """
     Convert a music file to LilyPond guitar tab and optionally generate a PDF.
@@ -156,7 +171,7 @@ def convert(
 
     s = import_score(file_path)
     title = os.path.basename(file_path)
-    title = title[:title.rfind('.')] or "untitled"
+    title = title[: title.rfind(".")] or "untitled"
 
     if transpose:
         s = transpose_score(s, transpose)
@@ -165,7 +180,9 @@ def convert(
     ly_file = os.path.join(output_dir, f"{title}_{tuning_arg}.ly")
 
     current_scores, time_signature, key_signature = iterate_measure(s)
-    ly_code = generate_guitar_tab(current_scores, time_signature, key_signature, tuning, tuning_arg)
+    ly_code = generate_guitar_tab(
+        current_scores, time_signature, key_signature, tuning, tuning_arg
+    )
     write_lilypond_tab(ly_code, ly_file)
 
     if generate_pdf:
@@ -174,4 +191,3 @@ def convert(
         return pdf_file
 
     return ly_file
-

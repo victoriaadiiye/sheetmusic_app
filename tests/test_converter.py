@@ -2,11 +2,16 @@ import pytest
 from unittest.mock import patch
 from music21 import stream, note, chord, meter, key
 from tab_creation_app.converter import (
-    get_tuning, generate_name, transpose_score,
-    convert_to_lilypond, iterate_measure, write_lilypond_tab,
-    convert
+    get_tuning,
+    generate_name,
+    transpose_score,
+    convert_to_lilypond,
+    iterate_measure,
+    write_lilypond_tab,
+    convert,
 )
 import os
+
 
 # -------------------------------
 # Fixtures
@@ -24,17 +29,21 @@ def simple_score_file(tmp_path):
     s.write("musicxml", fp=str(file_path))
     return str(file_path)
 
+
 # -------------------------------
 # get_tuning tests
 # -------------------------------
 def test_get_tuning_default():
     assert get_tuning("standard") == "#'standard \\stringTuning <e, a, d g b e'>"
 
+
 def test_get_tuning_custom_valid():
     assert get_tuning("abcdef") == "#'abcdef \\stringTuning <a, b, c, d, e, f>’"
 
+
 def test_get_tuning_invalid():
     assert get_tuning("abc") is None
+
 
 # -------------------------------
 # generate_name tests
@@ -42,16 +51,19 @@ def test_get_tuning_invalid():
 def test_generate_name_empty():
     assert generate_name("") == "mA"
 
+
 def test_generate_name_simple_increment():
     assert generate_name("mA") == "mB"
     assert generate_name("mZ") == "mAA"
     assert generate_name("mZZ") == "mAAA"
+
 
 def test_generate_name_invalid_input():
     with pytest.raises(ValueError):
         generate_name("A")
     with pytest.raises(ValueError):
         generate_name("mAB")
+
 
 # -------------------------------
 # transpose_score tests
@@ -61,8 +73,9 @@ def test_transpose_score_inplace():
     p = stream.Part()
     p.append(note.Note("C4"))
     s.append(p)
-    t_score = transpose_score(s, transpose=True, interval='P8')
+    t_score = transpose_score(s, transpose=True, interval="P8")
     assert t_score.parts[0].notes[0].pitch.nameWithOctave == "C5"
+
 
 # -------------------------------
 # convert_to_lilypond tests
@@ -85,6 +98,7 @@ def test_convert_to_lilypond_notes_and_key():
     assert time_sig == "4/4"
     assert key_sig.startswith("g")
 
+
 # -------------------------------
 # iterate_measure tests
 # -------------------------------
@@ -100,6 +114,7 @@ def test_iterate_measure_multiple_measures():
     assert isinstance(current_scores, str)
     assert "|" in current_scores
 
+
 # -------------------------------
 # write_lilypond_tab tests
 # -------------------------------
@@ -112,24 +127,27 @@ def test_write_lilypond_tab(tmp_path):
         content = f.read()
     assert content == code
 
+
 # -------------------------------
 # Full convert pipeline tests
 # -------------------------------
 def test_convert_pipeline(simple_score_file, tmp_path):
     """Test the convert function end-to-end without writing files."""
-    with patch("music2lilypond.converter.os.makedirs") as mock_makedirs, \
-         patch("music2lilypond.converter.write_lilypond_tab", return_value="mock_file.ly") as mock_write:
+    with patch("music2lilypond.converter.os.makedirs") as mock_makedirs, patch(
+        "music2lilypond.converter.write_lilypond_tab", return_value="mock_file.ly"
+    ) as mock_write:
 
         filename = convert(
             file_path=simple_score_file,
             tuning_arg="standard",
             transpose=True,
-            output_dir=str(tmp_path)
+            output_dir=str(tmp_path),
         )
 
         mock_makedirs.assert_called_once_with(str(tmp_path), exist_ok=True)
         assert mock_write.called
         assert filename == "mock_file.ly"
+
 
 def test_convert_invalid_tuning(simple_score_file, tmp_path):
     """Check that convert raises an error for invalid tuning."""
@@ -138,5 +156,5 @@ def test_convert_invalid_tuning(simple_score_file, tmp_path):
             file_path=simple_score_file,
             tuning_arg="invalid_tuning",
             transpose=True,
-            output_dir=str(tmp_path)
+            output_dir=str(tmp_path),
         )

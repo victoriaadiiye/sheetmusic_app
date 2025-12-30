@@ -50,4 +50,3 @@ mA = { b,8 d8 cis8 d8 e4 d4 c4 b,4 | g,8 b,8 a,8 b,8 c4 b,4 a,4 g,4 | g,8 b,8 a,
 
         mF = { r2 <g, d b e'> 4 <g, d b e'> 4 r2 | }
         \score { #(systemPair mF) }
-

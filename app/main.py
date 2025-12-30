@@ -10,6 +10,7 @@ OUTPUT_DIR = Path("/tmp/output")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+
 @app.get("/", response_class=HTMLResponse)
 async def home():
     return """
@@ -36,8 +37,11 @@ async def home():
     </html>
     """
 
+
 @app.post("/convert_form", response_class=HTMLResponse)
-async def convert_form(file: UploadFile, tuning: str = Form("standard"), transpose: bool = Form(False)):
+async def convert_form(
+    file: UploadFile, tuning: str = Form("standard"), transpose: bool = Form(False)
+):
     transpose = transpose if transpose is not None else False
     file_path = UPLOAD_DIR / file.filename
     with open(file_path, "wb") as f:
@@ -47,7 +51,7 @@ async def convert_form(file: UploadFile, tuning: str = Form("standard"), transpo
         file_path=str(file_path),
         tuning_arg=tuning,
         transpose=transpose,
-        output_dir=str(OUTPUT_DIR)
+        output_dir=str(OUTPUT_DIR),
     )
 
     return f"""
@@ -60,9 +64,10 @@ async def convert_form(file: UploadFile, tuning: str = Form("standard"), transpo
     </html>
     """
 
+
 @app.get("/download/{filename}")
 async def download(filename: str):
     file_path = OUTPUT_DIR / filename
     if file_path.exists():
-        return FileResponse(file_path, media_type='application/pdf', filename=filename)
+        return FileResponse(file_path, media_type="application/pdf", filename=filename)
     return HTMLResponse("File not found", status_code=404)
